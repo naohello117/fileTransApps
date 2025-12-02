@@ -11,5 +11,8 @@
     "@azure/storage-blob": "^12.17.0"
   },
   "devDependencies": {},
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "main": "src/{index.js,functions/*.js}"
 }
