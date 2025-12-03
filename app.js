@@ -218,12 +218,20 @@ async function handleUpload() {
             body: JSON.stringify({
                 filename: finalFilename,
                 expirationDays: days,
-                contentType: fileToUpload.type || 'application/octet-stream'
+                contentType: fileToUpload.type || 'application/octet-stream',
+                fileSize: fileToUpload.size
             })
         });
 
         if (!urlResponse.ok) {
             const error = await urlResponse.json();
+            
+            // レート制限エラーの特別処理
+            if (urlResponse.status === 429) {
+                const retryAfter = error.retryAfter || 60;
+                throw new Error(`リクエストが多すぎます。${retryAfter}秒後に再試行してください。`);
+            }
+            
             throw new Error(error.error || 'Failed to get upload URL');
         }
 
